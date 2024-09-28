@@ -1,0 +1,69 @@
+---
+- name: "SSH USER {{ gazella_project|upper }} {{ gazella_environment|upper }} - Add Gazellacom system group security"
+  become: yes
+  ansible.builtin.group:
+    name: "{{ gazella_client_group }}"
+    state: present
+  tags:
+    - gazella_user
+
+- name: "SSH USER {{ gazella_project|upper }} {{ gazella_environment|upper }} - Add Gazellacom AWX user"
+  ansible.builtin.user:
+    name: "{{ gazella_client_user }}"
+    group: "{{ gazella_client_group }}"
+    state: present
+    shell: "{{ gazella_client_user_shell }}"
+    password: "{{ gazella_client_user_passwd }}"
+    update_password: "{{ gazella_client_user_update_password }}"
+    system: "{{ gazella_client_user_system }}"
+  tags:
+    - gazella_user
+
+- name: "SSH USER {{ gazella_project|upper }} {{ gazella_environment|upper }} - Add directory for /home/{{ gazella_client_user }}/.ssh User"
+  file:
+    path: "/home/{{ gazella_client_user }}/.ssh"
+    state: directory
+    mode: 0700
+    owner: "{{ gazella_client_user }}"
+    group: "{{ gazella_client_group }}"
+
+- name: "SSH USER {{ gazella_project|upper }} {{ gazella_environment|upper }} - Copy the file from buffer key folder  {{ gazella_client_user }}"
+  ansible.builtin.copy: 
+    src: "key/{{ gazella_project|upper }}-AWX-USER.pub"
+    dest: "/home/{{ gazella_client_user }}/.ssh/{{ gazella_project|upper }}-AWX-USER.pub"
+
+- name: "SSH USER {{ gazella_project|upper }} {{ gazella_environment|upper }} - Add key for {{ gazella_client_user }} User"
+  ansible.posix.authorized_key:
+    user: "{{ gazella_client_user }}"
+    state: present
+    key: "{{ lookup('file', 'key/{{ gazella_project|upper }}-AWX-USER.pub') }}"
+
+
+- name: "SSH USER {{ gazella_project|upper }} {{ gazella_environment|upper }} - Create sudoers config for {{ gazella_client_user }} user"
+  ansible.builtin.template:
+    src: gazella-sudo.j2
+    dest: "/etc/sudoers.d/{{ gazella_client_user }}"
+    mode: 0440
+    owner: root
+    group: root
+    validate: "/usr/sbin/visudo -cf %s"
+
+- name: "SSH USER {{ gazella_project|upper }} {{ gazella_environment|upper }} - Delete file {{ gazella_project|upper }}-AWX-USER.pub"
+  ansible.builtin.file:
+    path: "/home/{{ gazella_client_user }}/.ssh/{{ gazella_project|upper }}-AWX-USER.pub"
+    state: absent
+  ignore_errors: yes
+
+- name: "SSH USER {{ gazella_project|upper }} {{ gazella_environment|upper }} -  Create awx  directory"
+  ansible.builtin.file:
+    path: "{{ gazella_client_base }}"
+    state: directory
+    owner: "{{ gazella_client_user }}"
+    group: "{{ gazella_client_group }}"
+    mode: 0775
+    force: no
+  tags:
+    - gazella_log
+
+
+

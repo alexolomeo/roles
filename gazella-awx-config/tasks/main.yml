@@ -1,0 +1,9 @@
+---
+
+- name: "Connfig to environment user access"
+  ansible.builtin.include_tasks: config_server.yml
+  when: gazella_mode == 'config_server'    
+
+- name: "Config user client server"
+  ansible.builtin.include_tasks: config_client.yml
+  when: gazella_mode == 'config_client'    

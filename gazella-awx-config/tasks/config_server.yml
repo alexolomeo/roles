@@ -1,0 +1,61 @@
+---
+
+- name: AWX SERVER - KEY SSH - Create KEY directory
+  ansible.builtin.file:
+    path: "{{ gazella_key_home }}"
+    state: directory
+    owner: "{{ gazella_awx_user }}"
+    group: "{{ gazella_awx_group }}"
+    mode: 0775
+    force: no
+  tags:
+    - gazella_log
+
+- name: AWX SERVER - KEY SSH - Create KEY directory project client
+  ansible.builtin.file:
+    path: "{{ gazella_key_home }}/{{ gazella_awx_project }}"
+    state: directory
+    owner: "{{ gazella_awx_user }}"
+    group: "{{ gazella_awx_group }}"
+    mode: 0775
+    force: no
+  tags:
+    - gazella_log
+
+- name: AWX SERVER - KEY SSH - Create KEY directory disable
+  ansible.builtin.file:
+    path: "{{ gazella_key_home }}/{{ gazella_awx_project }}/disable"
+    state: directory
+    owner: "{{ gazella_awx_user }}"
+    group: "{{ gazella_awx_group }}"
+    mode: 0775
+    force: no
+  tags:
+    - gazella_log
+
+- name: AWX SERVER - KEY SSH - Generate an OpenSSH keypair with the default values (4096 bits, rsa)
+  community.crypto.openssh_keypair:
+    path: "{{ gazella_key_home }}/{{ gazella_awx_project }}/{{ gazella_awx_project|upper }}-AWX-USER"
+
+- name: "AWX SERVER - KEY SSH - Add key for {{ gazella_awx_user }}  User"
+  lineinfile:
+    dest: /home/{{ gazella_awx_user }}/.ssh/authorized_keys
+    state: present
+    create: yes
+    line: "{{ lookup('file', '{{ gazella_key_home }}/{{ gazella_awx_project }}/{{ gazella_awx_project|upper }}-AWX-USER.pub') }}"
+    owner: "{{ gazella_awx_user }}"
+    group: "{{ gazella_awx_group }}"
+    mode: 0644
+
+- name: AWX SERVER - KEY SSH - Remove directory key buffer
+  ansible.builtin.file:
+    path: key/
+    state: absent
+  ignore_errors: yes
+
+- name: AWX SERVER - KEY SSH - Fetch the file from temporal files
+  run_once: yes
+  fetch: 
+    src: "{{ gazella_key_home }}/{{ gazella_awx_project }}/{{ gazella_awx_project|upper }}-AWX-USER.pub"
+    dest: key/ 
+    flat: yes
