@@ -9,13 +9,13 @@ gazella_client_database_environment: "{{ gazella_client_database }}/{{ gazella_e
 gazella_client_database_backup: "{{ gazella_client_database_environment }}/backup"
 gazella_client_database_copyfromprod: "{{ gazella_client_database_environment }}/remote"
 gazella_client_deployment: '{{ gazella_client_base }}/deployments'
-gazella_client_user:  awx_user
+gazella_client_user: awx-user
 gazella_client_group: "{{ gazella_group_security }}"
 gazella_client_user_passwd: "*"
 gazella_client_user_update_password: always
 gazella_client_user_shell: /bin/bash
 gazella_client_user_system: False
-gazella_awx_user: awx_build
+gazella_awx_user: awx-build
 gazella_awx_group: "{{ gazella_group_security }}"
 gazella_awx_project: "{{ gazella_project }}"
 gazella_awx_environment: "{{ gazella_environment }}"
