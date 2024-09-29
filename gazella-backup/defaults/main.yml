@@ -23,3 +23,5 @@ gazella_awx_group:  "{{ gazella_group_security }}"
 gazella_db_restore_node: 10
 gazella_db_local_retention: 1
 
+gazella_db_remote_exclude: "{{ db_remote_exclude }}"        # --exclude-table-data 'audit.*' 
+gazella_db_local_exclude: "{{ db_local_exclude }}"          # --exclude-table-data 'audit.*' 

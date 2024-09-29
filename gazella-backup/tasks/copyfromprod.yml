@@ -79,7 +79,7 @@
 
     - name: "Start get backup from production"
       become_user: "{{ gazella_awx_user }}"
-      ansible.builtin.shell: "export PGPASSWORD={{ gazella_db_remote_password }} ; pg_dump -h {{ gazella_db_remote_host }} -p {{ gazella_db_remote_port }} -U {{ gazella_db_remote_username }} -Fc  {{ gazella_db_remote_name }} >  {{ gazella_db_remote_name }}-{{ my_date }}{{ my_time }}.bkp "
+      ansible.builtin.shell: "export PGPASSWORD={{ gazella_db_remote_password }} ; pg_dump -h {{ gazella_db_remote_host }} -p {{ gazella_db_remote_port }} -U {{ gazella_db_remote_username }} {{ gazella_db_remote_exclude }}  -Fc  {{ gazella_db_remote_name }} >  {{ gazella_db_remote_name }}-{{ my_date }}{{ my_time }}.bkp "
       args:
         chdir: "{{ gazella_local_workdir }}/remote"
 
