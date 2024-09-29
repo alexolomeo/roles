@@ -65,7 +65,9 @@
         group: "{{ gazella_awx_group }}"
         mode: 0775
         force: yes
+
     - name: Install - Copy the gazella-restore script
+      become: yes
       ansible.builtin.template:
         src: gazella-restore.j2
         dest: "{{ gazella_local_workdir }}/bin/gazella-restore"
