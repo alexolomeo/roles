@@ -41,7 +41,7 @@
       ansible.builtin.file:
         path: "{{ gazella_local_workdir }}/log"
         state: directory
-       owner: "{{ gazella_awx_user }}"
+        owner: "{{ gazella_awx_user }}"
         group: "{{ gazella_awx_group }}"
         mode: 0775
         force: yes
