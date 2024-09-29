@@ -51,7 +51,7 @@
       args:
         chdir: "{{ gazella_local_workdir }}/backup"
 
-    - name: "Finish backup "
+    - name: "Backup On {{ gazella_project }} {{ gazella_environment }} - Finish backup "
       ansible.builtin.shell: "echo '{{ my_date }}{{ my_time }} [BACKUP] Creating backup {{ gazella_local_workdir }}/backup/{{ gazella_db_local_name }}-{{ my_date }}{{ my_time}}.bkp from the database {{ gazella_db_local_name }}' >> {{ gazella_local_workdir }}/log/backup.log"
         owner: "{{ gazella_awx_user }}"
         group: "{{ gazella_awx_group }}"
