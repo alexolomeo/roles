@@ -7,16 +7,16 @@
       debug:
         msg: "Ansible version is  {{ ansible_version.full }}"
 
-    - name: Get timestamp from the system
+    - name: "Get timestamp from the system"
       shell: "date +%Y%m%d-%H%M"
       register: tstamp
 
-    - name: Set variables
+    - name: "Set variables"
       set_fact:
        my_date: "{{ tstamp.stdout[0:8]}}"
        my_time: "{{ tstamp.stdout[8:]}}"
 
-    - name: "Ensure app workdir exists: {{ gazella_local_workdir }}"
+    - name: "Backup On {{ gazella_project }} {{ gazella_environment }} - Ensure app workdir exists: {{ gazella_local_workdir }}"
       become: yes
       ansible.builtin.file:
         path: "{{ gazella_local_workdir }}"
@@ -26,7 +26,7 @@
         mode: 0775
         force: yes
 
-    - name: "Backup directory workdir exists: {{ gazella_local_workdir }}/backup"
+    - name: "Backup On {{ gazella_project }} {{ gazella_environment }} - Backup directory workdir exists: {{ gazella_local_workdir }}/backup"
       ansible.builtin.file:
         path: "{{ gazella_local_workdir }}/backup"
         state: directory
@@ -35,7 +35,7 @@
         mode: 0775
         force: yes
 
-    - name: "Log Directory workdir exists: {{ gazella_local_workdir }}/log"
+    - name: "Backup On {{ gazella_project }} {{ gazella_environment }} - Log Directory workdir exists: {{ gazella_local_workdir }}/log"
       ansible.builtin.file:
         path: "{{ gazella_local_workdir }}/log"
         state: directory
@@ -44,11 +44,15 @@
         mode: 0775
         force: yes
 
-    - name: "Start PGDUMP for backup"
+    - name: "Backup On {{ gazella_project }} {{ gazella_environment }} - Starting PGDUMP for backup"
       ansible.builtin.shell: "export PGPASSWORD={{ gazella_db_local_password }} ; pg_dump -h {{ gazella_db_local_host }} -U {{ gazella_db_local_username }} --exclude-table-data 'audit.*'  -Fc {{ gazella_db_local_name }} > {{ gazella_db_local_name }}-{{ my_date }}{{ my_time }}.bkp "
+        owner: "{{ gazella_awx_user }}"
+        group: "{{ gazella_awx_group }}"
       args:
         chdir: "{{ gazella_local_workdir }}/backup"
 
     - name: "Finish backup "
       ansible.builtin.shell: "echo '{{ my_date }}{{ my_time }} [BACKUP] Creating backup {{ gazella_local_workdir }}/backup/{{ gazella_db_local_name }}-{{ my_date }}{{ my_time}}.bkp from the database {{ gazella_db_local_name }}' >> {{ gazella_local_workdir }}/log/backup.log"
+        owner: "{{ gazella_awx_user }}"
+        group: "{{ gazella_awx_group }}"
 
