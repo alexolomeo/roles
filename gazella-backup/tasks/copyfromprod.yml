@@ -27,6 +27,7 @@
         force: yes
 
     - name: "Remote directory workdir exists: {{ gazella_local_workdir }}/remote"
+      become_user: "{{ gazella_awx_user }}"
       ansible.builtin.file:
         path: "{{ gazella_local_workdir }}/remote"
         state: directory
@@ -36,6 +37,7 @@
         force: yes
 
     - name: "log directory workdir exists: {{ gazella_local_workdir }}/log"
+      become_user: "{{ gazella_awx_user }}"
       ansible.builtin.file:
         path: "{{ gazella_local_workdir }}/log"
         state: directory
@@ -45,6 +47,7 @@
         force: yes
 
     - name: "bin directory workdir exists: {{ gazella_local_workdir }}/bin"
+      become_user: "{{ gazella_awx_user }}"
       ansible.builtin.file:
         path: "{{ gazella_local_workdir }}/bin"
         state: directory
@@ -54,6 +57,7 @@
         force: yes
 
     - name: Install - Copy the gazella-restore script
+      become_user: "{{ gazella_awx_user }}"
       ansible.builtin.template:
         src: gazella-restore.j2
         dest: "{{ gazella_local_workdir }}/bin/gazella-restore"
@@ -68,44 +72,45 @@
       ignore_errors: yes
 
     - name: "Stop service wildfly"
+      become: yes
       ansible.builtin.systemd_service:
         state: stopped
         name: wildfly
 
     - name: "Start get backup from production"
-      become: yes
+      become_user: "{{ gazella_awx_user }}"
       ansible.builtin.shell: "export PGPASSWORD={{ gazella_db_remote_password }} ; pg_dump -h {{ gazella_db_remote_host }} -p {{ gazella_db_remote_port }} -U {{ gazella_db_remote_username }} -Fc  {{ gazella_db_remote_name }} >  {{ gazella_db_remote_name }}-{{ my_date }}{{ my_time }}.bkp "
       args:
         chdir: "{{ gazella_local_workdir }}/remote"
 
     - name: "Clean all connection"
-      become: yes
+      become_user: "{{ gazella_awx_user }}"
       ansible.builtin.shell: "export PGPASSWORD={{ gazella_db_local_password_main }} ; psql -h {{ gazella_db_local_host }} -p {{ gazella_db_local_port }}  -U {{ gazella_db_local_username_main }}  template1 -c \"SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE pid <> pg_backend_pid() AND datname =  '{{ gazella_db_local_name }}' \" "
 
     - name: "Drop database from integration"
-      become: yes
+      become_user: "{{ gazella_awx_user }}"
       ansible.builtin.shell: "export PGPASSWORD={{ gazella_db_local_password }} ; psql -h {{ gazella_db_local_host }} -p {{ gazella_db_local_port }}  -U {{ gazella_db_local_username }}  template1 -c \"DROP DATABASE  {{ gazella_db_local_name }} \" "
       ignore_errors: yes
 
     - name: "Create Database on integration"
-      become: yes
+      become_user: "{{ gazella_awx_user }}"
       ansible.builtin.shell: "export PGPASSWORD={{ gazella_db_local_password_main }} ; psql -h {{ gazella_db_local_host }} -p {{ gazella_db_local_port }}  -U {{ gazella_db_local_username_main }}  template1 -c \"CREATE DATABASE {{ gazella_db_local_name }} \" "
 
     - name: "Grant Database on integration"
-      become: yes
+      become_user: "{{ gazella_awx_user }}"
       ansible.builtin.shell: "export PGPASSWORD={{ gazella_db_local_password_main }} ; psql -h {{ gazella_db_local_host }} -p {{ gazella_db_local_port }}  -U {{ gazella_db_local_username_main }}  template1 -c \"GRANT ALL PRIVILEGES ON DATABASE {{ gazella_db_local_name }} TO {{ gazella_db_local_username }}  \" "
 
     - name: "Set Owner Database on integration"
-      become: yes
+      become_user: "{{ gazella_awx_user }}"
       ansible.builtin.shell: "export PGPASSWORD={{ gazella_db_local_password_main }} ; psql -h {{ gazella_db_local_host }} -p {{ gazella_db_local_port }}  -U {{ gazella_db_local_username_main }}  template1 -c \"ALTER DATABASE {{ gazella_db_local_name }} OWNER TO {{ gazella_db_local_username }} \" "
 
     - name: "Previus settinng  Database on integration"
-      become: yes
+      become_user: "{{ gazella_awx_user }}"
       ansible.builtin.shell: "export PGPASSWORD={{ gazella_db_local_password_main }} ; psql -h {{ gazella_db_local_host }} -p {{ gazella_db_local_port }}  -U {{ gazella_db_local_username_main }}  template1 -c \"{{ gazella_db_previus_command }} \" "
       ignore_errors: yes
 
     - name: "Start RESTORING for backup"
-      become: yes
+      become_user: "{{ gazella_awx_user }}"
       ansible.builtin.shell: "{{ gazella_local_workdir }}/bin/gazella-restore {{ gazella_db_local_username }} {{ gazella_db_local_password }} {{ gazella_db_local_name }} {{ gazella_db_local_host }} {{ gazella_local_workdir }}/remote/{{ gazella_db_remote_name }}-{{ my_date }}{{ my_time }}.bkp {{ gazella_local_workdir }}/remote/{{ gazella_db_remote_name }}-{{ my_date }}{{ my_time }}.log"
       args:
         chdir: "{{ gazella_local_workdir }}/bin"
@@ -121,10 +126,11 @@
     
 
     - name: "Finish backup "
-      become: yes
+      become_user: "{{ gazella_awx_user }}"
       ansible.builtin.shell: "echo '{{ my_date }}{{ my_time }} [RESTORING] Creating restoring form backup {{ gazella_local_workdir }}/remote/{{ gazella_db_remote_name }}-{{ my_date }}{{ my_time}}.bkp from the database {{ gazella_db_local_name }}' >> {{ gazella_local_workdir }}/log/copyfromprod.log"
 
     - name: "Start service wildfly"
+      become: yes
       ansible.builtin.systemd_service:
         state: started
         name: wildfly
