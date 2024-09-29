@@ -26,18 +26,7 @@
         mode: 0775
         force: yes
 
-    - name: "Remoteworkdir exists: {{ gazella_local_workdir }}"
-      become: yes
-      ansible.builtin.file:
-        path: "{{ gazella_local_workdir }}"
-        state: directory
-        owner: "{{ gazella_awx_user }}"
-        group: "{{ gazella_awx_group }}"
-        mode: 0775
-        force: yes
-
     - name: "Remote directory workdir exists: {{ gazella_local_workdir }}/remote"
-      become: yes
       ansible.builtin.file:
         path: "{{ gazella_local_workdir }}/remote"
         state: directory
@@ -47,7 +36,6 @@
         force: yes
 
     - name: "log directory workdir exists: {{ gazella_local_workdir }}/log"
-      become: yes
       ansible.builtin.file:
         path: "{{ gazella_local_workdir }}/log"
         state: directory
@@ -57,7 +45,6 @@
         force: yes
 
     - name: "bin directory workdir exists: {{ gazella_local_workdir }}/bin"
-      become: yes
       ansible.builtin.file:
         path: "{{ gazella_local_workdir }}/bin"
         state: directory
@@ -67,13 +54,12 @@
         force: yes
 
     - name: Install - Copy the gazella-restore script
-      become: yes
       ansible.builtin.template:
         src: gazella-restore.j2
         dest: "{{ gazella_local_workdir }}/bin/gazella-restore"
         owner: "{{ gazella_awx_user }}"
         group: "{{ gazella_awx_user }}"
-        force: no
+        force: yes
         mode: 0775
 
     - name: "Closed all applicatioonn PSQL, PG_RESTORE and PG_DUMP"
