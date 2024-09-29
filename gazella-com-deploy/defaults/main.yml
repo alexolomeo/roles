@@ -6,7 +6,7 @@ gazella_environment: integration                         #integration, productio
 gazella_build_profile_customer: null
 gazella_build_profile_environment: integration
 gazella_build_user: awx-build
-gazella_build_group: "{{ gazella_build_user }}"
+gazella_build_group: "{{ gazella_group_security }}"
 gazella_build_workspace: '/opt/workspace'
 gazella_build_workdir: "{{ gazella_build_workspace }}/{{  gazella_project }}/{{ gazella_project }}-deploy-{{ gazella_environment }}"
 gazella_build_sequence: "{{ gazella_build_workspace }}/{{  gazella_project }}/{{ gazella_project }}-sequence-{{ gazella_environment }}"
@@ -21,7 +21,7 @@ gazella_java_home: '/usr/lib64/jvm/jdk1.8.0_202'
 
 
 gazella_app_user: awx-user
-gazella_app_group: "{{ gazella_app_user }}"
+gazella_app_group: "{{ gazella_group_security }}"
 gazella_remote_workdir: '/opt/.awx/deployments'
 gazella_app_workdir: '/tmp/workdir'
 
