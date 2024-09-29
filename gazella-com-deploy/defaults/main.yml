@@ -1,0 +1,45 @@
+---
+
+gazella_mode: 
+gazella_project:                                         # client
+gazella_environment: integration                         #integration, production
+gazella_build_profile_customer: null
+gazella_build_profile_environment: integration
+gazella_build_user: awx-build
+gazella_build_group: "{{ gazella_build_user }}"
+gazella_build_workspace: '/opt/workspace'
+gazella_build_workdir: "{{ gazella_build_workspace }}/{{  gazella_project }}/{{ gazella_project }}-deploy-{{ gazella_environment }}"
+gazella_build_sequence: "{{ gazella_build_workspace }}/{{  gazella_project }}/{{ gazella_project }}-sequence-{{ gazella_environment }}"
+gazella_build_sequence_file: "{{ gazella_build_sequence }}/sequence.ini"
+
+gazella_build_repo_url: git@bitbucket.org:Swissbytes/syscom.git
+gazella_build_repo_branch: QA/COM-v2.13   #QA/COM-v2.13
+gazella_build_repo_filter: COM
+gazella_java_package_version: 'java-8'
+gazella_java_home: '/usr/lib64/jvm/jdk1.8.0_202'
+
+
+
+gazella_app_user: awx-user
+gazella_app_group: "{{ gazella_app_user }}"
+gazella_remote_workdir: '/opt/.awx/deployments'
+gazella_app_workdir: '/tmp/workdir'
+
+
+  
+#gazella_builder_host: localhost
+#gazella_build_app: true
+#gazella_build_delete_workdir: false
+#gazella_build_shell_interpreter: /bin/bash
+#gazella_build_relative_path_to_deploy_dir: target/gazellacom/
+
+#gazella_app_service_name: "{{ app_name }}"
+#gazella_deploy_systemd_service_conf: "/etc/{{ app_name }}.conf"
+#gazella_app_validation_host: localhost
+#gazella_systemd_service_template: 'templates/service_systemd.j2'
+#gazella_systemd_home: '/usr/lib/systemd/system'
+#gazella_app_port: 8080
+#gazella_app_port_firewalld: "{{ gazella_app_port }}"
+#gazella_app_firewalld_enabled: false
+#gazella_firewalld_package: firewalld
+

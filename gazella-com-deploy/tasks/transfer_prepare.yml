@@ -1,0 +1,58 @@
+---
+- name: "Preoare to tranfer"
+  block:
+
+    - name: AWX BUILD SERVER - PREPARE PACKAGE - Checking gazella_number_build
+      debug:
+        msg: "gazella_number_build is {{ gazella_number_build }}"
+
+    - name: AWX BUILD SERVER - PREPARE PACKAGE -Checking inventory_hostname
+      debug:
+        msg: "hostname is {{ inventory_hostname }}"
+
+    - name: "AWX BUILD SERVER - PREPARE PACKAGE - Delete previous /tmp/build_{{ gazella_number_build }}"
+      ansible.builtin.file:
+        path: "/tmp/{{ gazella_project }}_{{ gazella_environment }}_build_{{ gazella_number_build }}"
+        state: absent
+      ignore_errors: yes
+
+    - name: "AWX BUILD SERVER - PREPARE PACKAGE - Create exists: /tmp/build_{{ gazella_number_build }}"
+      ansible.builtin.file:
+        path: "/tmp/{{ gazella_project }}_{{ gazella_environment }}_build_{{ gazella_number_build }}"
+        state: directory
+        owner: "{{ gazella_build_user }}"
+        group: "{{ gazella_build_group }}"
+        mode: 0775
+        force: yes
+
+    - name: "AWX BUILD SERVER - PREPARE PACKAGE - Move deploy.war to /tmp/build_{{ gazella_number_build }}"
+      ansible.builtin.shell: "cp {{ gazella_build_workdir }}/target/*.war /tmp/{{ gazella_project }}_{{ gazella_environment }}_build_{{ gazella_number_build }}/"
+
+    - name: "AWX BUILD SERVER - PREPARE PACKAGE - Create compress file build_{{ gazella_number_build }}.tar.gz "
+      ansible.builtin.shell: "tar -zcvf {{ gazella_project }}_{{ gazella_environment }}_build_{{ gazella_number_build }}.tar.gz {{ gazella_project }}_{{ gazella_environment }}_build_{{ gazella_number_build }}" 
+      args:
+        chdir: "/tmp"
+
+    - name: "AWX BUILD SERVER - PREPARE PACKAGE - Remove directory file build_{{ gazella_number_build }} after compress"
+      ansible.builtin.file:
+        path: "/tmp/{{ gazella_project }}_{{ gazella_environment }}_build_{{ gazella_number_build }}"
+        state: absent
+      ignore_errors: yes
+
+    - name: AWX BUILD SERVER - PREPARE PACKAGE - Fetch the file from build localserver
+      run_once: yes
+      fetch: 
+        src: "/tmp/{{ gazella_project }}_{{ gazella_environment }}_build_{{ gazella_number_build }}.tar.gz"
+        dest: buffer/ 
+        flat: yes
+
+    - name: AWX BUILD SERVER - PREPARE PACKAGE - set to delegate variable from controller to com
+      set_fact:
+        gazella_number_build: "{{ gazella_number_build }}"
+        gazella_project: "{{ gazella_project }}"
+        gazella_environment: "{{ gazella_environment }}"
+      delegate_facts: yes
+      delegate_to: com
+
+  when: inventory_hostname == 'controller'
+
