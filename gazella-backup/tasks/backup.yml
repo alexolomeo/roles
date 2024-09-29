@@ -45,14 +45,11 @@
         force: yes
 
     - name: "Backup On {{ gazella_project }} {{ gazella_environment }} - Starting PGDUMP for backup"
+      become_user: "{{ gazella_awx_user }}"
       ansible.builtin.shell: "export PGPASSWORD={{ gazella_db_local_password }} ; pg_dump -h {{ gazella_db_local_host }} -U {{ gazella_db_local_username }} --exclude-table-data 'audit.*'  -Fc {{ gazella_db_local_name }} > {{ gazella_db_local_name }}-{{ my_date }}{{ my_time }}.bkp "
-        owner: "{{ gazella_awx_user }}"
-        group: "{{ gazella_awx_group }}"
       args:
         chdir: "{{ gazella_local_workdir }}/backup"
 
     - name: "Backup On {{ gazella_project }} {{ gazella_environment }} - Finish backup "
+      become_user: "{{ gazella_awx_user }}"
       ansible.builtin.shell: "echo '{{ my_date }}{{ my_time }} [BACKUP] Creating backup {{ gazella_local_workdir }}/backup/{{ gazella_db_local_name }}-{{ my_date }}{{ my_time}}.bkp from the database {{ gazella_db_local_name }}' >> {{ gazella_local_workdir }}/log/backup.log"
-        owner: "{{ gazella_awx_user }}"
-        group: "{{ gazella_awx_group }}"
-
