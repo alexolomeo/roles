@@ -58,7 +58,7 @@
         src: gazella-restore.j2
         dest: "{{ gazella_local_workdir }}/bin/gazella-restore"
         owner: "{{ gazella_awx_user }}"
-        group: "{{ gazella_awx_user }}"
+        group: "{{ gazella_awx_group }}"
         force: yes
         mode: 0775
 
