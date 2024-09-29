@@ -1,8 +1,8 @@
 ---
 
-- name: "Connfig to environment an user access"
-  ansible.builtin.include_tasks: config.yml
-  when: gazella_mode == 'config'    
+#- name: "Config to environment an user access"
+#  ansible.builtin.include_tasks: config.yml
+#  when: gazella_mode == 'config'    
 
 - name: "Backup DB GazellaCOM"
   ansible.builtin.include_tasks: backup.yml
