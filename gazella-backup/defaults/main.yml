@@ -18,7 +18,7 @@ gazella_db_local_password_main: "{{ db_password_main }}"
 gazella_local_base: '/opt/.awx/db'
 gazella_local_workdir: "{{ gazella_local_base }}/{{ gazella_environment }}"
 gazella_remote_workdir: "{{ gazella_local_base }}/remote"
-gazella_awx_user:  awx_user
+gazella_awx_user:  awx-user
 gazella_awx_group:  "{{ gazella_group_security }}"
 gazella_db_restore_node: 10
 gazella_db_local_retention: 1
