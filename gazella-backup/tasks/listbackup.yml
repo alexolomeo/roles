@@ -1,0 +1,14 @@
+---
+  
+- name: "LIST BACKUP - list  from backup ."
+  block:
+
+    - name: "BACKUP LIST PACKAGE - List to  backup files "
+      become: yes
+      ansible.builtin.shell: "ls {{ gazella_local_workdir }}/backup | sort -k {{ gazella_limit }} "
+      register: gazella_list_backup_read
+
+    - name: Print return information from the previous task
+      ansible.builtin.debug:
+        var: gazella_list_backup_read.stdout_lines
+        verbosity: 2

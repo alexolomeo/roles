@@ -12,3 +12,7 @@
   ansible.builtin.include_tasks: copyfromprod.yml
   when: gazella_mode == 'copyfromprod'    
 
+- name: "Lista Backup files"
+  ansible.builtin.include_tasks: listbackup.yml
+  when: gazella_mode == 'listbackup'    
+
