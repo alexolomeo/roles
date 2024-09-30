@@ -18,10 +18,9 @@ gazella_build_repo_filter: COM
 gazella_java_package_version: 'java-8'
 gazella_java_home: '/usr/lib64/jvm/jdk1.8.0_202'
 
-gazella_app_user: awx-user
-gazella_app_group: "{{ gazella_group_security }}"
+gazella_remote_user: awx-user
+gazella_remote_group: "{{ gazella_group_security }}"
 gazella_remote_workdir: '/opt/.awx/deployments'
-gazella_app_workdir: '/tmp/workdir'
 
 
   
