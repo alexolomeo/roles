@@ -46,13 +46,23 @@
         dest: buffer/ 
         flat: yes
 
-    - name: AWX BUILD SERVER - PREPARE PACKAGE - set to delegate variable from controller to com
+    - name: AWX BUILD SERVER - PREPARE PACKAGE - set to delegate variable from controller to COM-INTEGRATION
       set_fact:
         gazella_number_build: "{{ gazella_number_build }}"
         gazella_project: "{{ gazella_project }}"
         gazella_environment: "{{ gazella_environment }}"
       delegate_facts: yes
-      delegate_to: com
+      delegate_to: com-integration
+      when: gazella_environment == 'integration'
+
+    - name: AWX BUILD SERVER - PREPARE PACKAGE - set to delegate variable from controller to COM-PRODUCTION
+      set_fact:
+        gazella_number_build: "{{ gazella_number_build }}"
+        gazella_project: "{{ gazella_project }}"
+        gazella_environment: "{{ gazella_environment }}"
+      delegate_facts: yes
+      delegate_to: com-production
+      when: gazella_environment == 'production'
 
   when: inventory_hostname == 'controller'
 
