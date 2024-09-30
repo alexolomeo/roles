@@ -1,0 +1,12 @@
+---
+
+gazella_mode: 
+gazella_project:                                         # client
+gazella_environment: integration                         #integration, production
+gazella_remote_user: awx-user
+gazella_remote_group: "{{ gazella_group_security }}"
+gazella_remote_workdir: '/opt/.awx/deployments'
+gazella_jboss_workdir: '/opt/jboss'
+
+
+  

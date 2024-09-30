@@ -1,0 +1,14 @@
+---
+  
+- name: "{{ gazella_project|upper }} {{ gazella_environment|upper }} RESTART SERVER - Stop service wildfly"
+  become: yes
+  ansible.builtin.systemd_service:
+    state: stopped
+    name: wildfly
+
+- name: "{{ gazella_project|upper }} {{ gazella_environment|upper }} RESTART SERVER - Start service wildfly"
+  become: yes
+  ansible.builtin.systemd_service:
+    state: started
+    name: wildfly
+
