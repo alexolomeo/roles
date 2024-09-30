@@ -6,7 +6,7 @@
       debug:
         msg: "gazella_number_build is {{ gazella_number_build }}"
 
-    - name: AWX BUILD SERVER - PREPARE PACKAGE -Checking inventory_hostname
+    - name: AWX BUILD SERVER - PREPARE PACKAGE - Checking inventory_hostname
       debug:
         msg: "hostname is {{ inventory_hostname }}"
 
@@ -46,7 +46,7 @@
         dest: buffer/ 
         flat: yes
 
-    - name: AWX BUILD SERVER - PREPARE PACKAGE - set to delegate variable from controller to COM-INTEGRATION
+    - name: AWX BUILD SERVER - PREPARE PACKAGE - Set to delegate variable from controller to COM-INTEGRATION
       set_fact:
         gazella_number_build: "{{ gazella_number_build }}"
         gazella_project: "{{ gazella_project }}"
@@ -55,7 +55,7 @@
       delegate_to: com-integration
       when: gazella_environment == 'integration'
 
-    - name: AWX BUILD SERVER - PREPARE PACKAGE - set to delegate variable from controller to COM-PRODUCTION
+    - name: AWX BUILD SERVER - PREPARE PACKAGE - Set to delegate variable from controller to COM-PRODUCTION
       set_fact:
         gazella_number_build: "{{ gazella_number_build }}"
         gazella_project: "{{ gazella_project }}"

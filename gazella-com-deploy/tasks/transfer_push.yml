@@ -6,7 +6,7 @@
       debug:
         msg: "gazella_number_build is {{ gazella_number_build }}"
 
-    - name: "{{ gazella_project|upper }} {{ gazella_environment|upper }} SERVER - Ensure app workdir exists: {{ gazella_remote_workdir }}"
+    - name: "{{ gazella_project|upper }} {{ gazella_environment|upper }} SERVER - Create remote directory exists: {{ gazella_remote_workdir }}"
       ansible.builtin.file:
         path: "{{ gazella_remote_workdir }}"
         state: directory
