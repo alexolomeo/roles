@@ -1,7 +1,7 @@
 ---
 
 - name: "Backup DB Gazella  Encode "
-  ansible.builtin.include_tasks: backup-encoode.yml
+  ansible.builtin.include_tasks: backup-encode.yml
   when: gazella_mode == 'backup-encode'    
 
 - name: "Backup DB Gazella Encrypt"
