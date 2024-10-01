@@ -1,0 +1,89 @@
+---
+- name: "Preoare to encode"
+  block:
+
+    - name: "Get timestamp from the system"
+      shell: "date +%Y%m%d-%H%M"
+      register: tstamp
+
+    - name: "Set variables"
+      set_fact:
+       my_year: "{{ tstamp.stdout[0:4]}}"
+       my_months: "{{ tstamp.stdout[4:6]}}"
+       my_date: "{{ tstamp.stdout[0:8]}}"
+       my_time: "{{ tstamp.stdout[8:]}}"
+
+    - name: "AWX BUILD SERVER - PREPARE ENCODE - Ensure app workdir exists: {{ gazella_encode_workdir }}"
+      become: yes
+      ansible.builtin.file:
+        path: "{{ gazella_encode_workdir }}"
+        state: directory
+        owner: "{{ gazella_encode_user }}"
+        group: "{{ gazella_encode_group }}"
+        mode: 0775
+        force: yes
+
+    - name: "AWX BUILD SERVER - PREPARE ENCODE - Encode directory workdir exists: {{ gazella_encode_workdir }}/{{ my_year }}/{{ my_months }}"
+      become_user: "{{ gazella_encode_user }}"
+      ansible.builtin.file:
+        path: "{{ gazella_encode_workdir }}/{{ my_year }}/{{ my_months }}"
+        state: directory
+        owner: "{{ gazella_encode_user }}"
+        group: "{{ gazella_encode_group }}"
+        mode: 0775
+        force: yes
+
+    - name: "AWX BUILD SERVER - PREPARE ENCODE - Create encode file from openssl "
+      become_user: "{{ gazella_encode_user }}"
+      community.crypto.openssh_keypair:
+        path: "{{ gazella_encode_workdir }}/{{ my_year }}/{{ my_months }}/{{ gazella_db_local_name }}-{{ my_date }}-{{ my_time }}"      
+
+    - name: "AWX BUILD SERVER - PREPARE ENCODE - Prepare encode file {{ gazella_db_local_name }}-{{ my_date }}-{{ my_time }}.encrypt.pem "
+      become_user: "{{ gazella_encode_user }}"
+      ansible.builtin.shell: "cp {{ gazella_db_local_name }}-{{ my_date }}-{{ my_time }} {{ gazella_db_local_name }}-{{ my_date }}-{{ my_time }}.encrypt.pem"
+      args:
+        chdir: "{{ gazella_encode_workdir }}/{{ my_year }}/{{ my_months }}"
+
+    - name: "AWX BUILD SERVER - PREPARE ENCODE - Vault encrypt file {{ gazella_db_local_name }}-{{ my_date }}-{{ my_time }}.encrypt.pem "
+      become_user: "{{ gazella_encode_user }}"
+      ansible.builtin.shell: "ansible-vault encrypt {{ gazella_db_local_name }}-{{ my_date }}-{{ my_time }}.encrypt.pem {{ gazella_db_encrypt_pass }}"
+      args:
+        chdir: "{{ gazella_encode_workdir }}/{{ my_year }}/{{ my_months }}"
+
+    - name: AWX BUILD SERVER - PREPARE ENCODE - Delete successfully fetched files
+      file:
+        path: buffer-encrypt/
+        state: absent
+
+    - name: "AWX BUILD SERVER - PREPARE ENCODE - Fetch the file from controller server {{ gazella_db_local_name }}-{{ my_date }}-{{ my_time }}.pub"
+      run_once: yes
+      fetch: 
+        src: "{{ gazella_encode_workdir }}/{{ my_year }}/{{ my_months }}/{{ gazella_db_local_name }}-{{ my_date }}-{{ my_time }}.pub"
+        dest: buffer-encrypt/ 
+        flat: yes
+
+    - name: "AWX BUILD SERVER - PREPARE ENCODE - Fetch the file from controller server {{ gazella_db_local_name }}-{{ my_date }}-{{ my_time }}.encrypt.pem"
+      run_once: yes
+      fetch: 
+        src: "{{ gazella_encode_workdir }}/{{ my_year }}/{{ my_months }}/{{ gazella_db_local_name }}-{{ my_date }}-{{ my_time }}.encrypt.pem"
+        dest: buffer-encrypt/ 
+        flat: yes
+
+    - name: AWX BUILD SERVER - PREPARE ENCODE - Set to delegate variable from controller to COM-INTEGRATION
+      set_fact:
+        gazella_date: "{{ my_date }}"
+        gazella_time: "{{ my_time }}"
+      delegate_facts: yes
+      delegate_to: com-integration
+      when: gazella_environment == 'integration'
+
+    - name: AWX BUILD SERVER - PREPARE ENCODE - Set to delegate variable from controller to COM-PRODUCTION
+      set_fact:
+        gazella_date: "{{ my_date }}"
+        gazella_time: "{{ my_time }}"
+      delegate_facts: yes
+      delegate_to: com-production
+      when: gazella_environment == 'production'
+
+  when: inventory_hostname == 'controller'
+

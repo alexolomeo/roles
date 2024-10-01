@@ -2,6 +2,7 @@
 
 gazella_mode:                                #backup, copyfromprod, restore, cleandb
 gazella_project: client                      # client
+gazella_app:                                 # gazella-com , gazella-erp
 gazella_environment: integration             #integration, production
 gazella_db_remote_host: 
 gazella_db_remote_name:
@@ -23,6 +24,12 @@ gazella_awx_group:  "{{ gazella_group_security }}"
 gazella_db_restore_node: 10
 gazella_db_local_retention: 1
 gazella_limit: 10
+gazella_db_retentioo_day: 30                                # days
 
 gazella_db_remote_exclude: "{{ db_remote_exclude }}"        # --exclude-table-data 'audit.*' 
 gazella_db_local_exclude: "{{ db_local_exclude }}"          # --exclude-table-data 'audit.*' 
+
+gazella_encode_user: awx-build
+gazella_encode_group: "{{ gazella_group_security }}"
+gazella_encode_workspace: '/opt/encode/awx/secure'
+gazella_encode_workdir: "{{ gazella_encode_workspace }}/{{  gazella_project }}/{{ gazella_project }}-encode-{{ gazella_environment }}"

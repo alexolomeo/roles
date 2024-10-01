@@ -39,6 +39,11 @@
         state: absent
       ignore_errors: yes
 
+    - name: DAWX BUILD SERVER - PREPARE PACKAGE - elete successfully fetched files
+      file:
+        path: buffer/
+        state: absent    
+        
     - name: AWX BUILD SERVER - PREPARE PACKAGE - Fetch the file from build localserver
       run_once: yes
       fetch: 

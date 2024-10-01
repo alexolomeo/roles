@@ -1,8 +1,12 @@
 ---
 
-#- name: "Config to environment an user access"
-#  ansible.builtin.include_tasks: config.yml
-#  when: gazella_mode == 'config'    
+- name: "Backup DB Gazella  Encode "
+  ansible.builtin.include_tasks: backup-encoode.yml
+  when: gazella_mode == 'backup-encode'    
+
+- name: "Backup DB Gazella Encrypt"
+  ansible.builtin.include_tasks: backup-encrypt.yml
+  when: gazella_mode == 'backup-encrypt'    
 
 - name: "Backup DB GazellaCOM"
   ansible.builtin.include_tasks: backup.yml

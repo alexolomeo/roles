@@ -1,0 +1,94 @@
+---
+
+- name: "Backup Encrypt {{ gazella_project|upper }} - {{ gazella_environment|upper }} "
+  block:
+
+    - name: "Set variables from backup-encode"
+      set_fact:
+       my_date: "{{ gazella_date }}"
+       my_time: "{{ gazella_time }}"
+
+    - name: "{{ gazella_project|upper }} {{ gazella_environment|upper }} SERVER - PUSH PACKAGE - Checking gazella_number_build from tranfer_push.yml"
+      debug:
+        msg: "gazella_date is {{ my_date  }}, gazella_time is : {{ my_time }}"
+
+    - name: "Backup Encrypt {{ gazella_project|upper }} {{ gazella_environment|upper }} - Ensure app workdir exists: {{ gazella_local_workdir }}"
+      become: yes
+      ansible.builtin.file:
+        path: "{{ gazella_local_workdir }}"
+        state: directory
+        owner: "{{ gazella_awx_user }}"
+        group: "{{ gazella_awx_group }}"
+        mode: 0775
+        force: yes
+
+    - name: "Backup Encrypt {{ gazella_project|upper }} {{ gazella_environment|upper }} - Backup directory workdir exists: {{ gazella_local_workdir }}/encrypt"
+      become_user: "{{ gazella_awx_user }}"
+      ansible.builtin.file:
+        path: "{{ gazella_local_workdir }}/encrypt"
+        state: directory
+        owner: "{{ gazella_awx_user }}"
+        group: "{{ gazella_awx_group }}"
+        mode: 0775
+        force: yes
+
+    - name: "Backup Encrypt {{ gazella_project|upper }} {{ gazella_environment|upper }} - Log Directory workdir exists: {{ gazella_local_workdir }}/log"
+      become_user: "{{ gazella_awx_user }}"
+      ansible.builtin.file:
+        path: "{{ gazella_local_workdir }}/log"
+        state: directory
+        owner: "{{ gazella_awx_user }}"
+        group: "{{ gazella_awx_group }}"
+        mode: 0775
+        force: yes
+
+    - name: "Backup Encrypt {{ gazella_project|upper }} {{ gazella_environment|upper }} - Bin Directory workdir exists: {{ gazella_local_workdir }}/bin"
+      become_user: "{{ gazella_awx_user }}"
+      ansible.builtin.file:
+        path: "{{ gazella_local_workdir }}/log"
+        state: directory
+        owner: "{{ gazella_awx_user }}"
+        group: "{{ gazella_awx_group }}"
+        mode: 0775
+        force: yes
+
+    - name: "Backup Encrypt {{ gazella_project|upper }} {{ gazella_environment|upper }} - Install - Copy the gazella-encrypt script"
+      become_user: "{{ gazella_awx_user }}"
+      ansible.builtin.template:
+        src: gazella-encrypt.j2
+        dest: "{{ gazella_local_workdir }}/bin/gazella-encrypt"
+        owner: "{{ gazella_awx_user }}"
+        group: "{{ gazella_awx_group }}"
+        force: yes
+        mode: 0775
+
+    - name: "Backup Encrypt {{ gazella_project|upper }} {{ gazella_environment|upper }} - Copy the file from buffer-encrypt/{{ gazella_db_local_name }}-{{ my_date }}-{{ my_time }}.encrypt.pem "
+      ansible.builtin.copy:
+        src: "buffer-encrypt/{{ gazella_db_local_name }}-{{ my_date }}-{{ my_time }}.encrypt.pem"
+        dest: "{{ gazella_local_workdir }}/encrypt/{{ gazella_db_local_name }}-{{ my_date }}-{{ my_time }}.encrypt.pem"
+
+    - name: "Backup Encrypt {{ gazella_project|upper }} {{ gazella_environment|upper }} - Copy the file from buffer-encrypt/{{ gazella_db_local_name }}-{{ my_date }}-{{ my_time }}.pub "
+      ansible.builtin.copy:
+        src: "buffer-encrypt/{{ gazella_db_local_name }}-{{ my_date }}-{{ my_time }}.pub"
+        dest: "{{ gazella_local_workdir }}/encrypt/{{ gazella_db_local_name }}-{{ my_date }}-{{ my_time }}.pub"
+
+    - name: "Backup Encrypt {{ gazella_project|upper }} {{ gazella_environment|upper }} - Start DUMP ENCRYPT for backup"
+      become_user: "{{ gazella_awx_user }}"
+      ansible.builtin.shell: "{{ gazella_local_workdir }}/bin/gazella-encrypt {{ gazella_db_local_username }} {{ gazella_db_local_password }} {{ gazella_db_local_name }} {{ gazella_db_local_host }} {{ gazella_local_workdir }}/encrypt/{{ gazella_db_remote_name }}-{{ my_date }}{{ my_time }}.bkp {{ gazella_local_workdir }}/encrypt/{{ gazella_db_remote_name }}-{{ my_date }}{{ my_time }}.pub {{ gazella_db_local_exclude }}"
+      args:
+        chdir: "{{ gazella_local_workdir }}/encrypt"
+      ignore_errors: yes
+
+    - name: "Backup Encrypt {{ gazella_project|upper }} {{ gazella_environment|upper }} - Finish backup put log {{ gazella_local_workdir }}/log/backup-encrypt.log "
+      become_user: "{{ gazella_awx_user }}"
+      ansible.builtin.shell: "echo '{{ my_date }}{{ my_time }} [BACKUP ENCRYPT] Creating backup encrypt {{ gazella_local_workdir }}/encrypt/{{ gazella_db_local_name }}-{{ my_date }}{{ my_time}}.bkp.bz2.enc from the database {{ gazella_db_local_name }}' >> {{ gazella_local_workdir }}/log/backup-encrypt.log"
+
+    - name: "Backup Encrypt {{ gazella_project|upper }} {{ gazella_environment|upper }} - Delete {{ gazella_local_workdir }}/encrypt/{{ gazella_db_local_name }}-{{ my_date }}-{{ my_time }}.pub"
+      ansible.builtin.file:
+        path: "{{ gazella_local_workdir }}/encrypt/{{ gazella_db_local_name }}-{{ my_date }}-{{ my_time }}.pub"
+        state: absent
+      ignore_errors: yes
+
+  when: ( inventory_hostname == 'com-integration') or ( inventory_hostname == 'com-production')
+
+
