@@ -67,6 +67,7 @@
         src: "buffer-encrypt/{{ gazella_db_local_name }}-{{ my_date }}-{{ my_time }}.encrypt.pem"
         dest: "{{ gazella_local_workdir }}/encrypt/{{ gazella_db_local_name }}-{{ my_date }}-{{ my_time }}.encrypt.pem"
         force: true
+        backup: yes
 
     - name: "Backup Encrypt {{ gazella_project|upper }} {{ gazella_environment|upper }} - Copy the file from buffer-encrypt/{{ gazella_db_local_name }}-{{ my_date }}-{{ my_time }}.pub "
       ansible.builtin.copy:
