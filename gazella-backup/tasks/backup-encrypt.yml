@@ -66,11 +66,13 @@
       ansible.builtin.copy:
         src: "buffer-encrypt/{{ gazella_db_local_name }}-{{ my_date }}-{{ my_time }}.encrypt.pem"
         dest: "{{ gazella_local_workdir }}/encrypt/{{ gazella_db_local_name }}-{{ my_date }}-{{ my_time }}.encrypt.pem"
+        force: true
 
     - name: "Backup Encrypt {{ gazella_project|upper }} {{ gazella_environment|upper }} - Copy the file from buffer-encrypt/{{ gazella_db_local_name }}-{{ my_date }}-{{ my_time }}.pub "
       ansible.builtin.copy:
         src: "buffer-encrypt/{{ gazella_db_local_name }}-{{ my_date }}-{{ my_time }}.pub"
         dest: "{{ gazella_local_workdir }}/encrypt/{{ gazella_db_local_name }}-{{ my_date }}-{{ my_time }}.pub"
+        force: true
 
     - name: "Backup Encrypt {{ gazella_project|upper }} {{ gazella_environment|upper }} - Start DUMP ENCRYPT for backup"
       become_user: "{{ gazella_awx_user }}"
