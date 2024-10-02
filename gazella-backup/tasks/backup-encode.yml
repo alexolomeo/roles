@@ -46,7 +46,7 @@
 
     - name: "AWX BUILD SERVER - PREPARE ENCODE - Vault encrypt file {{ gazella_db_local_name }}-{{ my_date }}-{{ my_time }}.encrypt.pem "
       become_user: "{{ gazella_encode_user }}"
-      ansible.builtin.shell: "echo '{{ gazella_db_encrypt_pass }}:{{ gazella_db_encrypt_pass }}' | ansible-vault encrypt {{ gazella_db_local_name }}-{{ my_date }}-{{ my_time }}.encrypt.pem "
+      ansible.builtin.shell: "echo '{{ gazella_db_encrypt_pass }}' > {{ gazella_db_local_name }}-{{ my_date }}-{{ my_time }}.text ; ansible-vault encrypt {{ gazella_db_local_name }}-{{ my_date }}-{{ my_time }}.encrypt.pem --vault-password-file={{ gazella_db_local_name }}-{{ my_date }}-{{ my_time }}.text"
       args:
         chdir: "{{ gazella_encode_workdir }}/{{ my_year }}/{{ my_months }}"
 
