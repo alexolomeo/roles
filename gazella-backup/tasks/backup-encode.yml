@@ -33,14 +33,20 @@
         mode: 0775
         force: yes
 
-    - name: "AWX BUILD SERVER - PREPARE ENCODE - Create encode file from openssl "
+#    - name: "AWX BUILD SERVER - PREPARE ENCODE - Create encode file from openssl "
+#      become_user: "{{ gazella_encode_user }}"
+#      community.crypto.openssh_keypair:
+#        path: "{{ gazella_encode_workdir }}/{{ my_year }}/{{ my_months }}/{{ gazella_db_local_name }}-{{ my_date }}-{{ my_time }}"      
+
+    - name: "AWX BUILD SERVER - PREPARE ENCODE - Create encode file from openssl {{ gazella_db_local_name }}-{{ my_date }}-{{ my_time }}.encrypt.pem "
       become_user: "{{ gazella_encode_user }}"
-      community.crypto.openssh_keypair:
-        path: "{{ gazella_encode_workdir }}/{{ my_year }}/{{ my_months }}/{{ gazella_db_local_name }}-{{ my_date }}-{{ my_time }}"      
+      ansible.builtin.shell: "openssl req -x509 -nodes -days 1000000 -newkey rsa:4096 -keyout {{ gazella_db_local_name }}-{{ my_date }}-{{ my_time }}.pem -subj \"/C=US/ST=Illinois/L=Chicago/O=IT/CN=www.example.com\" -out {{ gazella_db_local_name }}-{{ my_date }}-{{ my_time }}.pub"
+      args:
+        chdir: "{{ gazella_encode_workdir }}/{{ my_year }}/{{ my_months }}"
 
     - name: "AWX BUILD SERVER - PREPARE ENCODE - Prepare encode file {{ gazella_db_local_name }}-{{ my_date }}-{{ my_time }}.encrypt.pem "
       become_user: "{{ gazella_encode_user }}"
-      ansible.builtin.shell: "cp {{ gazella_db_local_name }}-{{ my_date }}-{{ my_time }} {{ gazella_db_local_name }}-{{ my_date }}-{{ my_time }}.encrypt.pem"
+      ansible.builtin.shell: "cp {{ gazella_db_local_name }}-{{ my_date }}-{{ my_time }}.pem {{ gazella_db_local_name }}-{{ my_date }}-{{ my_time }}.encrypt.pem"
       args:
         chdir: "{{ gazella_encode_workdir }}/{{ my_year }}/{{ my_months }}"
 
