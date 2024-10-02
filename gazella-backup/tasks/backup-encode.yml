@@ -3,7 +3,7 @@
   block:
 
     - name: "Get timestamp from the system"
-      shell: "date +%Y%m%d-%H%M"
+      shell: "date +%Y%m%d%H%M"
       register: tstamp
 
     - name: "Set variables"
