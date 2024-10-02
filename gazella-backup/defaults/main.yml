@@ -16,6 +16,7 @@ gazella_db_local_username: "{{ db_username}}"
 gazella_db_local_password: "{{ db_password }}"
 gazella_db_local_username_main: "{{ db_username_main }}"
 gazella_db_local_password_main: "{{ db_password_main }}"
+gazella_db_encrypt_pass: "{{ db_key_decrypt }}"
 gazella_local_base: '/opt/.awx/db'
 gazella_local_workdir: "{{ gazella_local_base }}/{{ gazella_environment }}"
 gazella_remote_workdir: "{{ gazella_local_base }}/remote"
