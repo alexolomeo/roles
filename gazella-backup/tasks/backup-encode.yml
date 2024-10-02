@@ -61,17 +61,15 @@
         path: buffer-encrypt/
         state: absent
 
+    - name: "AWX BUILD SERVER - PREPARE PACKAGE - Create compress file build_{{ gazella_number_build }}.tar.gz "
+      ansible.builtin.shell: "tar -zcvf {{ gazella_db_local_name }}-{{ my_date }}-{{ my_time }}.tar.gz {{ gazella_db_local_name }}-{{ my_date }}-{{ my_time }}.pub {{ gazella_db_local_name }}-{{ my_date }}-{{ my_time }}.encrypt.pem"
+      args:
+        chdir: "{{ gazella_encode_workdir }}/{{ my_year }}/{{ my_months }}"
+
     - name: "AWX BUILD SERVER - PREPARE ENCODE - Fetch the file from controller server {{ gazella_db_local_name }}-{{ my_date }}-{{ my_time }}.pub"
       run_once: yes
       fetch: 
-        src: "{{ gazella_encode_workdir }}/{{ my_year }}/{{ my_months }}/{{ gazella_db_local_name }}-{{ my_date }}-{{ my_time }}.pub"
-        dest: buffer-encrypt/ 
-        flat: yes
-
-    - name: "AWX BUILD SERVER - PREPARE ENCODE - Fetch the file from controller server {{ gazella_db_local_name }}-{{ my_date }}-{{ my_time }}.encrypt.pem"
-      run_once: yes
-      fetch: 
-        src: "{{ gazella_encode_workdir }}/{{ my_year }}/{{ my_months }}/{{ gazella_db_local_name }}-{{ my_date }}-{{ my_time }}.encrypt.pem"
+        src: "{{ gazella_encode_workdir }}/{{ my_year }}/{{ my_months }}/{{ gazella_db_local_name }}-{{ my_date }}-{{ my_time }}.tar.gz"
         dest: buffer-encrypt/ 
         flat: yes
 

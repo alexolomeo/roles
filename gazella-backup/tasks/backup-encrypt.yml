@@ -62,20 +62,24 @@
         force: yes
         mode: 0775
 
-    - name: "Backup Encrypt {{ gazella_project|upper }} {{ gazella_environment|upper }} - Copy the file from buffer-encrypt/{{ gazella_db_local_name }}-{{ my_date }}-{{ my_time }}.encrypt.pem "
+    - name: "Backup Encrypt {{ gazella_project|upper }} {{ gazella_environment|upper }} - Copy the file from buffer-encrypt/{{ gazella_db_local_name }}-{{ my_date }}-{{ my_time }}.tar.gz"
       ansible.builtin.copy:
-        src: "buffer-encrypt/{{ gazella_db_local_name }}-{{ my_date }}-{{ my_time }}.encrypt.pem"
-        dest: "{{ gazella_local_workdir }}/encrypt/{{ gazella_db_local_name }}-{{ my_date }}-{{ my_time }}.encrypt.pem"
-        remote_src: yes
-        backup: yes
-
-
-    - name: "Backup Encrypt {{ gazella_project|upper }} {{ gazella_environment|upper }} - Copy the file from buffer-encrypt/{{ gazella_db_local_name }}-{{ my_date }}-{{ my_time }}.pub "
-      ansible.builtin.copy:
-        src: "buffer-encrypt/{{ gazella_db_local_name }}-{{ my_date }}-{{ my_time }}.pub"
-        dest: "{{ gazella_local_workdir }}/encrypt/{{ gazella_db_local_name }}-{{ my_date }}-{{ my_time }}.pub"
+        src: "buffer-encrypt/{{ gazella_db_local_name }}-{{ my_date }}-{{ my_time }}.tar.gz"
+        dest: "{{ gazella_local_workdir }}/encrypt/{{ gazella_db_local_name }}-{{ my_date }}-{{ my_time }}.tar.gz"
         force: true
 
+    - name: "Backup Encrypt {{ gazella_project|upper }} {{ gazella_environment|upper }} - Unarchive compress file {{ gazella_db_local_name }}-{{ my_date }}-{{ my_time }}.tar.gz"
+      ansible.builtin.unarchive:
+        src: "{{ gazella_local_workdir }}/encrypt/{{ gazella_db_local_name }}-{{ my_date }}-{{ my_time }}.tar.gz"
+        dest: "{{ gazella_local_workdir }}/encrypt/"
+        remote_src: yes
+
+    - name: "Backup Encrypt {{ gazella_project|upper }} {{ gazella_environment|upper }} - Delete compress {{ gazella_remote_workdir }}/build_{{ gazella_number_build }}.tar.gz"
+      ansible.builtin.file:
+        path: "{{ gazella_local_workdir }}/encrypt/{{ gazella_db_local_name }}-{{ my_date }}-{{ my_time }}.tar.gz"
+        state: absent
+      ignore_errors: yes
+  
     - name: "Backup Encrypt {{ gazella_project|upper }} {{ gazella_environment|upper }} - Start DUMP ENCRYPT for backup"
       become_user: "{{ gazella_awx_user }}"
       ansible.builtin.shell: "{{ gazella_local_workdir }}/bin/gazella-encrypt {{ gazella_db_local_username_main }} {{ gazella_db_local_password_main }} {{ gazella_db_local_name }} {{ gazella_db_local_host }} {{ gazella_local_workdir }}/encrypt/{{ gazella_db_local_name }}-{{ my_date }}-{{ my_time }}.bkp {{ gazella_local_workdir }}/encrypt/{{ gazella_db_local_name }}-{{ my_date }}-{{ my_time }}.pub {{ gazella_db_local_exclude }}"
