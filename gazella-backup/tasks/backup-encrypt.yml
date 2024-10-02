@@ -85,11 +85,11 @@
       become_user: "{{ gazella_awx_user }}"
       ansible.builtin.shell: "echo '{{ my_date }}{{ my_time }} [BACKUP ENCRYPT] Creating backup encrypt {{ gazella_local_workdir }}/encrypt/{{ gazella_db_local_name }}-{{ my_date }}{{ my_time}}.bkp.bz2.enc from the database {{ gazella_db_local_name }}' >> {{ gazella_local_workdir }}/log/backup-encrypt.log"
 
-    - name: "Backup Encrypt {{ gazella_project|upper }} {{ gazella_environment|upper }} - Delete {{ gazella_local_workdir }}/encrypt/{{ gazella_db_local_name }}-{{ my_date }}-{{ my_time }}.pub"
-      ansible.builtin.file:
-        path: "{{ gazella_local_workdir }}/encrypt/{{ gazella_db_local_name }}-{{ my_date }}-{{ my_time }}.pub"
-        state: absent
-      ignore_errors: yes
+#    - name: "Backup Encrypt {{ gazella_project|upper }} {{ gazella_environment|upper }} - Delete {{ gazella_local_workdir }}/encrypt/{{ gazella_db_local_name }}-{{ my_date }}-{{ my_time }}.pub"
+#      ansible.builtin.file:
+#        path: "{{ gazella_local_workdir }}/encrypt/{{ gazella_db_local_name }}-{{ my_date }}-{{ my_time }}.pub"
+#        state: absent
+#      ignore_errors: yes
 
   when: ( inventory_hostname == 'com-integration') or ( inventory_hostname == 'com-production')
 
