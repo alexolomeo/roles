@@ -1,0 +1,19 @@
+---
+
+#- name: "Config User for AWX"
+#  ansible.builtin.include_tasks: user.yml
+#  when: ansible_os_family == "RedHat" 
+    
+- name: "Config environment user Java Package"
+  ansible.builtin.include_tasks: java.yml
+  when: ansible_os_family == "RedHat" 
+    
+- name: "Configenvironment user Maven Package"
+  ansible.builtin.include_tasks: maven.yml
+  when: ansible_os_family == "RedHat" 
+    
+- name: "ConfigDirectory to AWX"
+  ansible.builtin.include_tasks: user.yml
+  when: ansible_os_family == "RedHat" 
+    
+

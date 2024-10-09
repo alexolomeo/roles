@@ -1,0 +1,48 @@
+---
+
+- block:
+
+    - name: Java] - Create config directorio for JAVA_HOME
+      ansible.builtin.file:
+        path: /usr/lib64/jvm
+        state: directory
+        owner: "{{ gazellacom_user }}"
+        group: "{{ gazella_group_security }}"
+        force: yes
+
+    - name: Java - Download the Java SDK file from S3 - ARCH x64
+      ansible.builtin.get_url:
+        url: "{{ gazellacom_java_oracle_file_x64 }}"
+        force: yes
+        dest: "/usr/lib64/jvm/jdk-8u391-linux-x64.tar.gz"
+      when: gazellacom_arch == 'x64'
+
+    - name: Java - Change permission Oracle Java SDK file - ARCH x64
+      ansible.builtin.file:
+        dest: "/usr/lib64/jvm/jdk-8u391-linux-x64.tar.gz"
+        mode: a+x
+      when: gazellacom_arch == 'x64'
+
+    - name: Java - Uncompress the Oracle Java SDK file - ARCH x64
+      ansible.builtin.unarchive:
+        src: "/usr/lib64/jvm/jdk-8u391-linux-x64.tar.gz"
+        dest: /usr/lib64/jvm
+        copy: no
+      when: gazellacom_arch == 'x64'
+
+    - name: Java - Add simbolic link to alternative
+      ansible.builtin.file:
+        src: "/usr/lib64/jvm/jdk1.8.0_391/bin/java"
+        dest: "/etc/alternatives/java"
+        force: yes
+        state: link
+
+    - name: Java  - Add simbolic link to path bin environment
+      ansible.builtin.file:
+        src: "/etc/alternatives/java"
+        dest: "/usr/bin/java"
+        force: yes
+        state: link
+
+  when: gazellacom_unify_activate == false
+

@@ -1,0 +1,16 @@
+---
+
+gazella_mode:                                #config_client, config_server, reset, clean
+gazella_project: client                      # client
+gazella_environment: integration             #integration, production
+gazella_awx_user: awx-build
+gazella_awx_group: "{{ gazella_group_security }}"
+gazella_awx_project: "{{ gazella_project }}"
+gazella_awx_environment: "{{ gazella_environment }}"
+gazella_key_home: /opt/vault
+gazella_encode_home: /opt/encode
+gazella_workspace_home: /opt/workspace
+gazella_java_package: jdk-8u202-linux-x64.tar.gz
+gazella_maven_package: apache-maven-3.9.9-bin.zip
+gazella_maven_base: /usr/lib54/jvm
+gazella_java_base: /opt
