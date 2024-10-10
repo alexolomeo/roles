@@ -34,3 +34,5 @@ gazella_encode_user: awx-build
 gazella_encode_group: "{{ gazella_group_security }}"
 gazella_encode_workspace: '/opt/encode/awx/secure'
 gazella_encode_workdir: "{{ gazella_encode_workspace }}/{{  gazella_project }}/{{ gazella_project }}-encode-{{ gazella_environment }}"
+
+gazella_update_password_enable: enable

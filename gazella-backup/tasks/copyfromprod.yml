@@ -115,6 +115,11 @@
       args:
         chdir: "{{ gazella_local_workdir }}/bin"
       ignore_errors: yes
+
+    - name: "Finish backup "
+      become_user: "{{ gazella_awx_user }}"
+      ansible.builtin.shell: "echo '{{ my_date }}{{ my_time }} [RESTORING] Creating restoring form backup {{ gazella_local_workdir }}/remote/{{ gazella_db_remote_name }}-{{ my_date }}{{ my_time}}.bkp from the database {{ gazella_db_local_name }}' >> {{ gazella_local_workdir }}/log/copyfromprod.log"
+
     
 #    - name: "Start RESTORING for backup"
 #      become: yes
@@ -124,10 +129,19 @@
 #        chdir: "{{ gazella_local_workdir }}/remote"
 #      ignore_errors: yes
     
+    - name: "Update  Password for Com Aplication "
+      block:
 
-    - name: "Finish backup "
-      become_user: "{{ gazella_awx_user }}"
-      ansible.builtin.shell: "echo '{{ my_date }}{{ my_time }} [RESTORING] Creating restoring form backup {{ gazella_local_workdir }}/remote/{{ gazella_db_remote_name }}-{{ my_date }}{{ my_time}}.bkp from the database {{ gazella_db_local_name }}' >> {{ gazella_local_workdir }}/log/copyfromprod.log"
+        - name: "Update Password"
+          ansible.builtin.include_tasks: update_password.yml
+          
+        - name: "Insert SQL update from {{ gazella_local_workdir }}/update_password/update_password-{{ my_date }}-{{ my_time }}.sql"
+          become_user: "{{ gazella_awx_user }}"
+          ansible.builtin.shell: "export PGPASSWORD={{ gazella_db_local_password_main }} ; psql -h {{ gazella_db_local_host }} -p {{ gazella_db_local_port }}  -U {{ gazella_db_local_username_main }}  {{ gazella_db_local_name }}  < {{ gazella_local_workdir }}/update_password/update_password-{{ my_date }}-{{ my_time }}.sql "
+          ignore_errors: yes
+
+      when: gazella_update_password_enable == 'enable'
+
 
     - name: "Start service wildfly"
       become: yes
