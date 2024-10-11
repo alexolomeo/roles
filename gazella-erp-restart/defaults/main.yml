@@ -2,10 +2,7 @@
 
 gazella_mode: 
 gazella_project:                                         # client
-gazella_app:                                             # gazella-com gazella-erp
+gazella_app:                                             # gazella-com,  gazella-erp
 gazella_environment: integration                         #integration, production
 gazella_local_user: awx-user
 gazella_local_group: "{{ gazella_group_security }}"
-
-
-  

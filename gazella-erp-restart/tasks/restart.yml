@@ -1,0 +1,14 @@
+---
+  
+- name: "{{ gazella_project|upper }} {{ gazella_environment|upper }} RESTART SERVER - Stop service odoo-server"
+  become: yes
+  ansible.builtin.systemd_service:
+    state: stopped
+    name: odoo-server
+
+- name: "{{ gazella_project|upper }} {{ gazella_environment|upper }} RESTART SERVER - Start service odoo-server"
+  become: yes
+  ansible.builtin.systemd_service:
+    state: started
+    name: odoo-server
+

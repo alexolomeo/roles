@@ -1,0 +1,28 @@
+---
+  
+- name: "{{ gazella_project|upper }} {{ gazella_environment|upper }} RESTART SERVICE - Killall java."
+  become: yes
+  ansible.builtin.shell: "killall java; killall java; killall java "
+  ignore_errors: yes
+    
+- name: "{{ gazella_project|upper }} {{ gazella_environment|upper }} RESTART SERVICE - Killall python3."
+  become: yes
+  ansible.builtin.shell: "killall python3; killall python3; killall python3 "
+  ignore_errors: yes
+    
+- name: "{{ gazella_project|upper }} {{ gazella_environment|upper }} RESTART SERVICE - Stop service odoo-server"
+  become: yes
+  ansible.builtin.systemd_service:
+    state: stopped
+    name: odoo-server
+
+- name: "{{ gazella_project|upper }} {{ gazella_environment|upper }} RESTART SERVICE - Restart Jasper Report."
+  become: yes
+  ansible.builtin.shell: "/etc/init.d/jasper-report start" 
+
+- name: "{{ gazella_project|upper }} {{ gazella_environment|upper }} RESTART SERVICE - Start service odoo-server"
+  become: yes
+  ansible.builtin.systemd_service:
+    state: started
+    name: odoo-server
+

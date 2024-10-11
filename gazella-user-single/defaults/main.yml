@@ -1,0 +1,23 @@
+---
+
+gazella_mode:                                #config_client, config_server, reset, clean
+gazella_project: client                      # client
+gazella_environment: integration             #integration, production
+gazella_local_base: '/opt/.awx'
+gazella_local_database: '{{ gazella_local_base }}/db'
+gazella_local_database_environment: "{{ gazella_local_database }}/{{ gazella_environment }}"
+gazella_local_database_backup: "{{ gazella_local_database_environment }}/backup"
+gazella_local_database_copyfromprod: "{{ gazella_local_database_environment }}/remote"
+gazella_local_deployment: '{{ gazella_local_base }}/deployments'
+gazella_local_user: awx-user
+gazella_local_group: "{{ gazella_group_security }}"
+gazella_local_user_passwd: "*"
+gazella_local_user_update_password: always
+gazella_local_user_shell: /bin/bash
+gazella_local_user_system: False
+gazella_awx_user: awx-build
+gazella_awx_group: "{{ gazella_group_security }}"
+gazella_awx_project: "{{ gazella_project }}"
+gazella_awx_environment: "{{ gazella_environment }}"
+gazella_key_home: /opt/vault/awx/secure
+

@@ -1,0 +1,10 @@
+---
+
+- name: "Prepare application to restart"
+  ansible.builtin.include_tasks: restart.yml
+  when: gazella_mode == 'restart'    
+
+- name: "Prepare application to restart-clean"
+  ansible.builtin.include_tasks: restart-clean.yml
+  when: gazella_mode == 'restart-clean'    
+
