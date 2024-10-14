@@ -5,5 +5,6 @@
   when: gazella_mode == 'user_server'    
 
 - name: "Config user ssh clent server"
+  ansible.builtin.include_tasks: user_client.yml
   when: gazella_mode == 'user_client'    
 

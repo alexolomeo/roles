@@ -54,10 +54,10 @@
   ignore_errors: yes
 
 - name: "Set Privilegis for COM APPLICATION"
-  sible.builtin.include_tasks: privileges_com.yml
+  ansible.builtin.include_tasks: privileges_com.yml
   when: gazella_app == 'com'
 
 - name: "Set Privilegis for ERP APPLICATION"
-  sible.builtin.include_tasks: privileges_erp.yml
+  ansible.builtin.include_tasks: privileges_erp.yml
   when: gazella_app == 'erp'
 
