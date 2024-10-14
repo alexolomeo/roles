@@ -23,6 +23,7 @@
   ansible.builtin.lineinfile:
     path: /etc/sudoers.d/swisstechgroup
     state: present
+    insertafter: EOF
     line: '{{ gazella_local_user }} ALL=(LL) NOPASSWD: SERVICES, APP'
     validate: 'visudo -cf %s'
       
