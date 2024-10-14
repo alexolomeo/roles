@@ -13,17 +13,9 @@
 - name: "Install - Create sudoers config for SwisstechGroup user"
   ansible.builtin.template:
     src: gazella.sudo.j2
-    dest: "/etc/sudoers.d/swisstechgroup"
+    dest: "/etc/sudoers.d/{{ gazella_local_user }}"
     mode: 0440
     owner: root
     group: root
     validate: "/usr/sbin/visudo -cf %s"
-      
-- name: SUDO - Give sudo access to Develop User
-  ansible.builtin.lineinfile:
-    path: /etc/sudoers.d/swisstechgroup
-    state: present
-    insertafter: EOF
-    line: '{{ gazella_local_user }} ALL=(LL) NOPASSWD: SERVICES, APP'
-    validate: 'visudo -cf %s'
       
