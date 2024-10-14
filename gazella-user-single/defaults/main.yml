@@ -1,6 +1,7 @@
 ---
 
 gazella_mode:                                #config_client, config_server, reset, clean
+gazella_app:                                 # com, erp
 gazella_project: client                      # client
 gazella_environment: integration             #integration, production
 gazella_local_user: "{{ gazella_user_new|lower }}-user"
@@ -14,4 +15,3 @@ gazella_awx_group: "{{ gazella_group_security }}"
 gazella_awx_project: "{{ gazella_project }}"
 gazella_awx_environment: "{{ gazella_environment }}"
 gazella_key_home: /opt/vault/awx/secure
-

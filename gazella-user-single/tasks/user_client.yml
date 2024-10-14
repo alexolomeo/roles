@@ -38,7 +38,6 @@
     state: present
     key: "{{ lookup('file', 'key/{{ gazella_project|upper }}-{{ gazella_user_new|upper }}-USER.pub') }}"
 
-
 - name: "SSH USER {{ gazella_project|upper }} {{ gazella_environment|upper }} - Create sudoers config for {{ gazella_local_user }} user"
   ansible.builtin.template:
     src: gazella-sudo.j2
@@ -48,9 +47,17 @@
     group: root
     validate: "/usr/sbin/visudo -cf %s"
 
-- name: "SSH USER {{ gazella_project|upper }} {{ gazella_environment|upper }} - Delete file {{ gazella_project|upper }}-AWX-USER.pub"
+- name: "SSH USER {{ gazella_project|upper }} {{ gazella_environment|upper }} - Delete file {{ gazella_project|upper }}-{{ gazella_user_new|upper }}-USER.pub"
   ansible.builtin.file:
     path: "/home/{{ gazella_local_user }}/.ssh/{{ gazella_project|upper }}-{{ gazella_user_new|upper }}-USER.pub"
     state: absent
   ignore_errors: yes
+
+- name: "Set Privilegis for COM APPLICATION"
+  sible.builtin.include_tasks: privileges_com.yml
+  when: gazella_app == 'com'
+
+- name: "Set Privilegis for ERP APPLICATION"
+  sible.builtin.include_tasks: privileges_erp.yml
+  when: gazella_app == 'erp'
 

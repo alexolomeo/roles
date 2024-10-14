@@ -1,0 +1,30 @@
+---
+
+- name: SUDO - Give sudo access to {{ gazella_group_security }} group
+  blockinfile:
+    path: /etc/sudoers
+    insertafter: 'root    ALL=(ALL)       ALL'
+    block: |
+      # Gives sudo access to the devops group
+      Cmnd_Alias SERVICES = /sbin/service, /sbin/chkconfig, /usr/bin/systemctl start odoo-server, /usr/bin/systemctl stop odoo-server, /usr/bin/systemctl reload, /usr/bin/systemctl restart odoo-server, /usr/bin/systemctl status odoo-server, /usr/bin/systemctl status ufw, /usr/bin/systemctl start ufw, /usr/bin/systemctl stop ufw, /usr/bin/systemctl restart ufw
+      Cmnd_Alias APP = /usr/sbin/ufw, /bin/df, /usr/sbin/getenforce, /usr/sbin/setenforce, /usr/sbin/getsebool, /usr/sbin/semanage, /bin/chmod, /bin/chown, /usr/bin/zip , /usr/bin/unzip, /usr/bin/rm, /sbin/route
+      %{{ gazella_group_security }} ALL=(ALL) NOPASSWD: SERVICES, APP 
+
+- name: "Install - Create sudoers config for SwisstechGroup user"
+  ansible.builtin.template:
+    src: gazella.sudo.j2
+    dest: "/etc/sudoers.d/swisstechgroup"
+    mode: 0440
+    owner: root
+    group: root
+    validate: "/usr/sbin/visudo -cf %s"
+      
+- name: SUDO - Give sudo access to Develop User
+  ansible.builtin.lineinfile:
+    path: /etc/sudoers.d/swisstechgroup
+    state: present
+    insertafter: '#USER DEVELOPER'
+    line: '{{ gazella_local_user }} ALL=(ALL) NOPASSWD: SERVICES, APP'
+    validate: 'visudo -cf %s'
+  when: gazella_local_user is defined
+      
