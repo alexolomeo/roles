@@ -26,5 +26,4 @@
     insertafter: '#USER DEVELOPER'
     line: '{{ gazella_local_user }} ALL=(LL) NOPASSWD: SERVICES, APP'
     validate: 'visudo -cf %s'
-  when: gazella_loca_user is defined
       
