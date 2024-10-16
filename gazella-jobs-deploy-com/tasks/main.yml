@@ -14,4 +14,8 @@
 
 - name: "Deploy new package on wildfly"
   ansible.builtin.include_tasks: deploy.yml
-  when: gazella_mode == 'deploy'    
+  when: gazella_mode == 'deploy' and gazella_unify_activate == false   
+
+- name: "Deploy new package on wildflyi Unify"
+  ansible.builtin.include_tasks: deploy-unify.yml
+  when: gazella_mode == 'deploy' and gazella_unify_activate == true  

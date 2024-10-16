@@ -21,3 +21,6 @@ gazella_java_home: '/usr/lib64/jvm/jdk1.8.0_202'
 gazella_remote_user: awx-user
 gazella_remote_group: "{{ gazella_group_security }}"
 gazella_remote_workdir: '/opt/.awx/deployments'
+gazella_unify_activate: no            # yes, no
+gazella_unify_path: /opt/.gazellacom   # path for unify all configuration
+

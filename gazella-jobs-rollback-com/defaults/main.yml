@@ -18,6 +18,7 @@ gazella_build_sequence: "{{ gazella_build_workspace }}/{{  gazella_project }}/{{
 gazella_build_sequence_file: "{{ gazella_build_sequence }}/sequence.ini"
 gazella_build_user: awx-build
 gazella_build_group: "{{ gazella_group_security }}"
-
+gazellacom_unify_activate: no            # yes, no
+gazellacom_unify_path: /opt/.gazellacom   # path for unify all configuration
 
 
