@@ -1,8 +1,8 @@
 galaxy_info:
-  role_name: gazella-com-restart
+  role_name: gazella-jobs-rollback-com
   namespace: middleware_automation
   author: Alexander Aguilar Torrico
-  description: Gazella com restart ...
+  description: rollback ...
   company: SwissTech Solutions.
 
   license: Apache License 2.0
@@ -16,7 +16,7 @@ galaxy_info:
      - 9
 
   galaxy_tags:
-    - amazon ami
+    - ubuntu
     - redhat
     - rhel
     - tools

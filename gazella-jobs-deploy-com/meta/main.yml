@@ -1,5 +1,5 @@
 galaxy_info:
-  role_name: gazella-com-deploy
+  role_name: gazella-jobs-deploy-com
   namespace: middleware_automation
   author: Alexander Aguilar Torrico
   description: Gazella deploy ...

@@ -1,8 +1,8 @@
 galaxy_info:
-  role_name: gazella-com-rollback
+  role_name: gazella-jobs-backup
   namespace: middleware_automation
   author: Alexander Aguilar Torrico
-  description: rollback ...
+  description: backup ...
   company: SwissTech Solutions.
 
   license: Apache License 2.0
@@ -19,6 +19,6 @@ galaxy_info:
     - ubuntu
     - redhat
     - rhel
-    - tools
-    - application
-    - java
+    - postgresql
+    - databases
+    - replications

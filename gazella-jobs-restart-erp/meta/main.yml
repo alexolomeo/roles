@@ -1,5 +1,5 @@
 galaxy_info:
-  role_name: gazella-erp-restart
+  role_name: gazella-jobs-restart-erp
   namespace: middleware_automation
   author: Alexander Aguilar Torrico
   description: Gazella erp restart ...
