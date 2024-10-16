@@ -34,6 +34,5 @@
       ignore_errors: yes
 
   when: ( inventory_hostname == 'com-integration') or ( inventory_hostname == 'com-production')
-    #  when: inventory_hostname == 'com'
 
 

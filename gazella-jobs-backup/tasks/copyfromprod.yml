@@ -120,15 +120,6 @@
       become_user: "{{ gazella_awx_user }}"
       ansible.builtin.shell: "echo '{{ my_date }}{{ my_time }} [RESTORING] Creating restoring form backup {{ gazella_local_workdir }}/remote/{{ gazella_db_remote_name }}-{{ my_date }}{{ my_time}}.bkp from the database {{ gazella_db_local_name }}' >> {{ gazella_local_workdir }}/log/copyfromprod.log"
 
-    
-#    - name: "Start RESTORING for backup"
-#      become: yes
-#      ansible.builtin.shell: "export PGPASSWORD={{ gazella_db_local_password }} ; pg_restore -v -h {{ gazella_db_local_host }} -p {{ gazella_db_local_port }} -j {{ gazella_db_restore_node }}  -U {{ gazella_db_local_username }} -Fc -d {{ gazella_db_local_name }}   {{ gazella_local_workdir }}/remote/{{ gazella_db_remote_name }}-{{ my_date }}{{ my_time }}.bkp"
-#      args:
-#        executable: /bin/bash
-#        chdir: "{{ gazella_local_workdir }}/remote"
-#      ignore_errors: yes
-    
     - name: "Update  Password for Com Aplication "
       block:
 
@@ -141,7 +132,6 @@
           ignore_errors: yes
 
       when: gazella_update_password_enable == 'enable'
-
 
     - name: "Start service wildfly"
       become: yes
