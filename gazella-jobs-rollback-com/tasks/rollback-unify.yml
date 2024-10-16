@@ -27,7 +27,7 @@
 
 - name: "ROLLBBACK - Deploy application as a systemd service on target system."
   become: yes
-  ansible.builtin.shell: bash /opt/jboss/bin/jboss-cli.sh --connect --command="undeploy *.war" || true
+  ansible.builtin.shell: "bash {{ gazella_unify_path }}/app/jboss/bin/jboss-cli.sh --connect --command="undeploy *.war" || true "
 
 - name: "ROLLBBACK - Stop service wildfly"
   become: yes
@@ -36,14 +36,14 @@
     name: wildfly
 
 - name: "ROLLBBACK - Remove all deploy file from wildfly."
-  ansible.builtin.shell: rm -rf /opt/jboss/standalone/deployments/*
+  ansible.builtin.shell: "rm -rf {{ gazella_unify_path }}/app/jboss/standalone/deployments/*"
 
 - name: "ROLLBBACK - Remove all termporal files from wildfly."
   become: yes
-  ansible.builtin.shell: rm -rf /opt/jboss/standalone/tmp
+  ansible.builtin.shell: "rm -rf {{ gazella_unify_path }}/app/jboss/standalone/tmp"
 
 - name: "ROLLBBACK - Deploy new package "
-  ansible.builtin.shell: "cp {{ gazella_remote_workdir }}//{{ gazella_project }}_{{ gazella_environment}}_build_{{ gazella_number_build }}/*.war /opt/jboss/standalone/deployments"
+  ansible.builtin.shell: "cp {{ gazella_remote_workdir }}//{{ gazella_project }}_{{ gazella_environment}}_build_{{ gazella_number_build }}/*.war {{ gazella_unify_path }}/app/jboss/standalone/deployments"
 
 - name: "ROLLBBACK - Start service wildfly"
   become: yes
