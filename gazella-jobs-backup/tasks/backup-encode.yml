@@ -35,7 +35,7 @@
 
     - name: "AWX BUILD SERVER - PREPARE ENCODE - Create encode file from openssl {{ gazella_db_local_name }}-{{ my_date }}-{{ my_time }}.encrypt.pem "
       become_user: "{{ gazella_encode_user }}"
-      ansible.builtin.shell: "openssl req -x509 -nodes -days 1000000 -newkey rsa:4096 -keyout {{ gazella_db_local_name }}-{{ my_date }}-{{ my_time }}.pem -subj \"/C=US/ST=Illinois/L=Chicago/O=IT/CN=www.example.com\" -out {{ gazella_db_local_name }}-{{ my_date }}-{{ my_time }}.pub"
+      ansible.builtin.shell: "openssl req -x509 -nodes -days 1000000 -newkey rsa:4096 -keyout {{ gazella_db_local_name }}-{{ my_date }}-{{ my_time }}.pem -subj \"/C=BO/ST=SantaCruz/L=SantaCruz/O=IT/CN=www.swisstech.solutions\" -out {{ gazella_db_local_name }}-{{ my_date }}-{{ my_time }}.pub"
       args:
         chdir: "{{ gazella_encode_workdir }}/{{ my_year }}/{{ my_months }}"
 
@@ -58,6 +58,11 @@
 
     - name: "AWX BUILD SERVER - PREPARE PACKAGE - Create compress file build_{{ gazella_number_build }}.tar.gz "
       ansible.builtin.shell: "tar -zcvf {{ gazella_db_local_name }}-{{ my_date }}-{{ my_time }}.tar.gz {{ gazella_db_local_name }}-{{ my_date }}-{{ my_time }}.pub {{ gazella_db_local_name }}-{{ my_date }}-{{ my_time }}.encrypt.pem"
+      args:
+        chdir: "{{ gazella_encode_workdir }}/{{ my_year }}/{{ my_months }}"
+
+    - name: "AWX BUILD SERVER - PREPARE PACKAGE - Clean file generate "
+      ansible.builtin.shell: "rm -rf {{ gazella_db_local_name }}-{{ my_date }}-{{ my_time }}.pub {{ gazella_db_local_name }}-{{ my_date }}-{{ my_time }}.encrypt.pem {{ gazella_db_local_name }}-{{ my_date }}-{{ my_time }}.pem"
       args:
         chdir: "{{ gazella_encode_workdir }}/{{ my_year }}/{{ my_months }}"
 
